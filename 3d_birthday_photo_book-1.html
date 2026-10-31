@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D பிறந்தநாள் புகைப்படப் புத்தகம்</title>
+<style>
+:root{--wine:#742747;--rose:#f4cbd9;--paper:#fffaf1;--ink:#542b3c}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:20px 12px 34px;font-family:system-ui,-apple-system,"Noto Sans Tamil",sans-serif;text-align:center;color:var(--ink);background:radial-gradient(circle at top,#fff8fb,#f2d0dd 70%,#e7b8cb)}
+h1{font-size:clamp(1.35rem,5vw,2rem);margin:5px 0 8px}
+p{line-height:1.6}
+.intro{max-width:580px;margin:0 auto 18px}
+.stage{width:min(94vw,430px);height:530px;margin:0 auto;perspective:1800px;position:relative}
+.book{width:100%;height:100%;position:relative;transform-style:preserve-3d;filter:drop-shadow(0 18px 16px #64223c35)}
+.back-cover{position:absolute;inset:0;background:#6e2545;border-radius:5px 14px 14px 5px;box-shadow:inset 8px 0 #4c1830}
+.spine{position:absolute;top:0;bottom:0;left:0;width:18px;background:linear-gradient(90deg,#4c1830,#8d3a5d,#5b1e39);z-index:80;border-radius:5px 0 0 5px}
+.page{position:absolute;inset:5px 5px 5px 16px;transform-origin:left center;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+.page.turned{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--paper);border:1px solid #e8d6ce;border-radius:2px 9px 9px 2px;padding:18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.face.back{transform:rotateY(180deg);background:#fff7f3}
+.cover{background:linear-gradient(145deg,#fff3f6,#f4cbd9);border:5px double #a34b70}
+.cover .ornament{font-size:3.2rem}
+.cover h2{font-size:1.65rem;color:#742747;margin:12px 0}
+.cover p{margin:4px 0}
+.photo{width:100%;height:335px;object-fit:contain;background:#f0e4e8;border-radius:6px}
+.caption{font-weight:650;margin:10px 0 0;overflow-wrap:anywhere}
+.pagenum{font-size:.8rem;color:#97687d;margin-top:6px}
+.endicon{font-size:3rem}
+.endmessage{white-space:pre-wrap;overflow-wrap:anywhere}
+.controls{display:flex;justify-content:center;align-items:center;gap:10px;margin:16px auto 12px;flex-wrap:wrap}
+button,.pick{border:0;border-radius:999px;padding:11px 15px;background:var(--wine);color:#fff;font:inherit;font-weight:650;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.pick{display:inline-block;background:#fff;color:var(--wine);border:1px solid #d4a1b5}
+input[type=file]{display:none}
+.counter{min-width:85px;font-size:.9rem}
+.settings{max-width:430px;margin:18px auto 0;background:#ffffffa8;padding:14px;border:1px solid #e6bccc;border-radius:14px;text-align:left}
+.settings label.title{font-weight:700;display:block;margin:4px 0 8px}
+textarea{width:100%;min-height:75px;border:1px solid #d8afbf;border-radius:9px;padding:10px;font:inherit;background:#fff}
+.note{max-width:520px;margin:12px auto;font-size:.85rem;color:#70495a}
+@media(max-width:390px){.stage{height:490px}.face{padding:12px 9px}.photo{height:300px}.cover h2{font-size:1.4rem}}
+@media(prefers-reduced-motion:reduce){.page{transition:none}}
+</style>
+</head>
+<body>
+<h1>🎂 இனிய பிறந்தநாள் வாழ்த்துகள்! 💗</h1>
+<p class="intro">உனக்காக உருவாக்கிய சிறிய நினைவுப் புத்தகம்.<br>பக்கத்தை விரலால் இடப்புறம் இழுத்துத் திருப்பு அல்லது அடுத்தது என்பதை அழுத்து.</p>
+
+<div class="stage">
+ <div class="book" id="book">
+  <div class="back-cover"></div><div class="spine"></div>
+  <div class="page" data-index="0" style="z-index:40">
+   <div class="face cover">
+    <div class="ornament">🎁</div><h2>ஒரு சிறிய பரிசு</h2>
+    <p>30 அழகான நினைவுகள்</p><p>உனக்காக அன்புடன் 💖</p>
+    <p style="margin-top:25px;font-size:.85rem">பக்கத்தைத் திருப்பித் திறக்கவும் →</p>
+   </div>
+   <div class="face back"><h2>நினைவுகளின் தொடக்கம் ✨</h2><p>ஒவ்வொரு புகைப்படமும் ஒரு அழகான நினைவு.</p><p>தொடர்ந்து பக்கத்தைத் திருப்பு →</p></div>
+  </div>
+  <div id="photoPages"></div>
+  <div class="page" id="lastPage" data-index="31" style="z-index:1">
+   <div class="face cover"><div class="endicon">💌</div><h2>இனிய பிறந்தநாள் வாழ்த்துகள்!</h2><p class="endmessage" id="endPreview">உன் வாழ்க்கை முழுவதும் மகிழ்ச்சியும் அன்பும் நிறைந்திருக்கட்டும்! 💖</p><p>அன்புடன் 💗</p></div>
+   <div class="face back"><h2>மீண்டும் பார்க்கலாம் ✨</h2><p>இந்த நினைவுப் புத்தகத்தை ரசித்ததற்கு நன்றி.</p></div>
+  </div>
+ </div>
+</div>
+<div class="controls">
+ <button id="prev" disabled>← முந்தைய பக்கம்</button>
+ <span class="counter" id="counter">அட்டைப்படம்</span>
+ <button id="next">அடுத்த பக்கம் →</button>
+</div>
+
+<div><label class="pick" for="photos">📷 30 புகைப்படங்களைத் தேர்வு செய்</label><input id="photos" type="file" accept="image/*" multiple></div>
+
+<div class="settings">
+ <label class="title" for="greeting">கடைசிப் பக்க வாழ்த்துச் செய்தி</label>
+ <textarea id="greeting">உன் வாழ்க்கை முழுவதும் மகிழ்ச்சியும் அன்பும் நிறைந்திருக்கட்டும்! இனிய பிறந்தநாள் வாழ்த்துகள்! 💖</textarea>
+</div>
+<p class="note">குறிப்பு: இந்தக் கோப்பு உங்கள் கைப்பேசியில் மாதிரியை இயக்கும். நீங்கள் தேர்வு செய்த புகைப்படங்கள் இந்த உலாவியில் மட்டுமே காட்டப்படும். நண்பருக்கு அனுப்பும் பொதுவான லிங்கில் புகைப்படங்களும் தெரிய, கோப்பையும் புகைப்படங்களையும் இணையத்தில் வெளியிட வேண்டும்.</p>
+
+<script>
+(() => {
+ const book=document.getElementById('book'), pagesWrap=document.getElementById('photoPages');
+ const photoInput=document.getElementById('photos'), prev=document.getElementById('prev'), next=document.getElementById('next');
+ const counter=document.getElementById('counter'), greeting=document.getElementById('greeting'), endPreview=document.getElementById('endPreview');
+ let pages=[], photoURLs=[], opened=0, startX=null;
+
+ // Build 30 individual photo pages. The cover is page 0; final message is page 31.
+ for(let i=1;i<=30;i++){
+   const p=document.createElement('div'); p.className='page'; p.dataset.index=String(i);
+   p.style.zIndex=String(40-i);
+   p.innerHTML=`<div class="face"><div class="empty" style="width:100%;height:335px;display:grid;place-items:center;background:#f0e4e8;border-radius:6px;padding:15px;color:#85566a">புகைப்படம் ${i}<br>புகைப்படங்களைத் தேர்வு செய்யவும்</div><p class="caption">நினைவு ${i} 💗</p><div class="pagenum">${i} / 30</div></div><div class="face back"><h2>அழகான நினைவு ✨</h2><p>அடுத்த பக்கத்தில் இன்னொரு புகைப்படம் காத்திருக்கிறது.</p></div>`;
+   pagesWrap.appendChild(p); pages.push(p);
+ }
+ const cover=book.querySelector('.page[data-index="0"]');
+ const finalPage=document.getElementById('lastPage');
+ pages.push(finalPage);
+ const allPages=[cover,...pages];
+
+ function update(){
+   allPages.forEach((p,i)=>{
+     const turned=i<opened;
+     p.classList.toggle('turned',turned);
+     p.style.zIndex=String(turned ? i+1 : 100-i);
+   });
+   prev.disabled=opened===0;
+   next.disabled=opened>=allPages.length;
+   if(opened===0) counter.textContent='அட்டைப்படம்';
+   else if(opened===allPages.length) counter.textContent='முடிவு';
+   else if(opened===allPages.length-1) counter.textContent='வாழ்த்துப் பக்கம்';
+   else counter.textContent=`பக்கம் ${Math.min(opened,30)} / 30`;
+ }
+ function forward(){if(opened<allPages.length){opened++;update();}}
+ function backward(){if(opened>0){opened--;update();}}
+ next.addEventListener('click',forward); prev.addEventListener('click',backward);
+ allPages.forEach((p,i)=>{
+   p.addEventListener('click',()=>{ if(i>=opened) forward(); else backward(); });
+   p.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX;},{passive:true});
+   p.addEventListener('touchend',e=>{
+     if(startX===null)return;
+     const dx=e.changedTouches[0].clientX-startX;
+     if(Math.abs(dx)>35){ if(dx<0)forward(); else backward(); }
+     startX=null;
+   },{passive:true});
+ });
+ photoInput.addEventListener('change',()=>{
+   photoURLs.forEach(URL.revokeObjectURL); photoURLs=[];
+   const files=Array.from(photoInput.files||[]).slice(0,30);
+   photoURLs=files.map(f=>URL.createObjectURL(f));
+   pages.forEach((p,i)=>{
+     const face=p.querySelector('.face');
+     face.innerHTML='';
+     if(photoURLs[i]){
+       const img=document.createElement('img');img.className='photo';img.src=photoURLs[i];img.alt=`புகைப்படம் ${i+1}`;face.appendChild(img);
+     }else{
+       const empty=document.createElement('div');empty.style.cssText='width:100%;height:335px;display:grid;place-items:center;background:#f0e4e8;border-radius:6px;padding:15px;color:#85566a';empty.textContent=`புகைப்படம் ${i+1}`;face.appendChild(empty);
+     }
+     const cap=document.createElement('p');cap.className='caption';cap.textContent=`நினைவு ${i+1} 💗`;face.appendChild(cap);
+     const num=document.createElement('div');num.className='pagenum';num.textContent=`${i+1} / 30`;face.appendChild(num);
+   });
+   if(files.length<30) alert(`${files.length} புகைப்படங்கள் தேர்வு செய்யப்பட்டுள்ளன. மீதமுள்ள பக்கங்கள் காலியாக இருக்கும்.`);
+ });
+ greeting.addEventListener('input',()=>endPreview.textContent=greeting.value);
+ update();
+})();
+</script>
+</body>
+</html>
